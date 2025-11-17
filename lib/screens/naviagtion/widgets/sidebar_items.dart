@@ -34,6 +34,7 @@ class _SidebarItemsState extends State<SidebarItems> {
       label: 'Skills',
     ),
     _SidebarItem(
+
       lightIcon: IconlyLight.profile,
       boldIcon: IconlyBold.profile,
       label: 'About Me',
