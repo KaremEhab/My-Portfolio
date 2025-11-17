@@ -34,7 +34,6 @@ class _SidebarItemsState extends State<SidebarItems> {
       label: 'Skills',
     ),
     _SidebarItem(
-
       lightIcon: IconlyLight.profile,
       boldIcon: IconlyBold.profile,
       label: 'About Me',
@@ -98,8 +97,7 @@ class _SidebarItemsState extends State<SidebarItems> {
                     child: Text(
                       item.label,
                       style: TextStyle(
-                        fontSize: isSelected
-                            ? 15 : 13,
+                        fontSize: isSelected ? 15 : 13,
                         fontWeight: isSelected
                             ? FontWeight.w600
                             : FontWeight.w300,
