@@ -496,3 +496,302 @@ class _SpotlightContentState extends State<_SpotlightContent> {
     );
   }
 }
+
+void showMenuDialog(
+  BuildContext context,
+  Function(int) onPageSelected,
+  int currentPageIndex,
+) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      final theme = Theme.of(context);
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.all(20),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(25),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            child: Container(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(25),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.1),
+                  width: 1,
+                ),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  buildMenuItem(
+                    context,
+                    IconlyLight.home,
+                    "Home",
+                    0,
+                    currentPageIndex,
+                    onPageSelected,
+                  ),
+                  buildMenuItem(
+                    context,
+                    IconlyLight.work,
+                    "Projects",
+                    1,
+                    currentPageIndex,
+                    onPageSelected,
+                  ),
+                  buildMenuItem(
+                    context,
+                    Icons.code_rounded,
+                    "Skills",
+                    2,
+                    currentPageIndex,
+                    onPageSelected,
+                  ),
+                  buildMenuItem(
+                    context,
+                    IconlyLight.profile,
+                    "About Me",
+                    3,
+                    currentPageIndex,
+                    onPageSelected,
+                  ),
+                  buildMenuItem(
+                    context,
+                    IconlyLight.user,
+                    "Testimonials",
+                    4,
+                    currentPageIndex,
+                    onPageSelected,
+                  ),
+                  buildMenuItem(
+                    context,
+                    IconlyLight.message,
+                    "Contact Me",
+                    5,
+                    currentPageIndex,
+                    onPageSelected,
+                  ),
+
+                  const SizedBox(height: 15),
+                  const Divider(),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Language", style: theme.textTheme.bodyMedium),
+                      Row(
+                        children: [
+                          _langButton(context, "العربية"),
+                          const SizedBox(width: 8),
+                          _langButton(context, "English", selected: true),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: theme.primaryColor.withOpacity(0.15),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.wb_sunny_outlined,
+                            color: theme.iconTheme.color,
+                          ),
+                          const SizedBox(width: 8),
+                          Text("Light Mode", style: theme.textTheme.bodyMedium),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Widget buildMenuItem(
+  BuildContext context,
+  IconData icon,
+  String title,
+  int index,
+  int currentPageIndex,
+  Function(int) onTap,
+) {
+  final bool selected = index == currentPageIndex;
+  final theme = Theme.of(context);
+
+  return InkWell(
+    borderRadius: BorderRadius.circular(15),
+    onTap: () {
+      Navigator.pop(context);
+      onTap(index);
+    },
+    child: Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+      decoration: BoxDecoration(
+        color: selected
+            ? theme.primaryColor.withOpacity(0.15)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(15),
+        border: selected
+            ? Border.all(color: theme.primaryColor, width: 1)
+            : null,
+      ),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: 22,
+            color: selected ? theme.primaryColor : theme.iconTheme.color,
+          ),
+          const SizedBox(width: 15),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+              color: selected
+                  ? theme.primaryColor
+                  : theme.textTheme.bodyMedium!.color,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget _langButton(BuildContext context, String text, {bool selected = false}) {
+  final theme = Theme.of(context);
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(12),
+      color: selected
+          ? theme.primaryColor.withOpacity(0.2)
+          : theme.cardColor.withOpacity(0.2),
+      border: Border.all(
+        color: selected ? theme.primaryColor : Colors.white.withOpacity(0.15),
+        width: 1,
+      ),
+    ),
+    child: Text(text, style: theme.textTheme.bodyMedium),
+  );
+}
+
+class MarqueeLoop extends StatefulWidget {
+  final List<Widget> items;
+  final double gap;
+  final Duration speed;
+
+  const MarqueeLoop({
+    super.key,
+    required this.items,
+    this.gap = 50,
+    this.speed = const Duration(seconds: 20),
+  });
+
+  @override
+  State<MarqueeLoop> createState() => _MarqueeLoopState();
+}
+
+class _MarqueeLoopState extends State<MarqueeLoop>
+    with SingleTickerProviderStateMixin {
+  late final ScrollController _scrollController;
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController = ScrollController();
+    _controller = AnimationController(vsync: this);
+
+    _startScrolling();
+  }
+
+  void _startScrolling() {
+    Future.delayed(const Duration(milliseconds: 300), () {
+      double maxExtent = _scrollController.position.maxScrollExtent;
+
+      _controller.repeat(period: widget.speed);
+      _controller.addListener(() {
+        if (_scrollController.hasClients) {
+          double offset = (_controller.value * maxExtent).clamp(0, maxExtent);
+
+          _scrollController.jumpTo(offset);
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    /// duplication for infinite effect
+    List<Widget> loopItems = [
+      ...widget.items,
+      SizedBox(width: widget.gap),
+      ...widget.items,
+    ];
+
+    return SizedBox(
+      height: 40,
+      child: ListView(
+        controller: _scrollController,
+        scrollDirection: Axis.horizontal,
+        physics: const NeverScrollableScrollPhysics(),
+        children: [
+          Row(
+            children: List.generate(loopItems.length, (i) {
+              return Padding(
+                padding: EdgeInsets.only(right: widget.gap),
+                child: loopItems[i],
+              );
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+Widget marqueeItem(String label) {
+  return Row(
+    children: [
+      Icon(Icons.auto_awesome, size: 18, color: Colors.white),
+      const SizedBox(width: 6),
+      Text(
+        label,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    ],
+  );
+}

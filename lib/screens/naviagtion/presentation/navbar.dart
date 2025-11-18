@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iconly/iconly.dart';
 import 'package:my_portfolio/core/app/constants.dart';
 import 'package:my_portfolio/core/app/cubit/app_cubit.dart';
+import 'package:my_portfolio/core/widgets.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({super.key, required this.onPageSelected});
@@ -16,6 +17,7 @@ class NavBar extends StatefulWidget {
 }
 
 class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
+  int selectedPageIndex = 0;
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
 
@@ -51,9 +53,7 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final screenWidth = MediaQuery
-        .sizeOf(context)
-        .width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
 
     // -----------------------------------------------------------
     // 🛠️ ANIMATION LOGIC
@@ -66,7 +66,7 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
       _controller.reverse();
     }
 
-    double navbarWidth = screenWidth * 0.9;
+    double navbarWidth = screenWidth >= 300 ? 400 : 300;
 
     final items = [
       {
@@ -114,14 +114,14 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
     return SlideTransition(
       position: _offsetAnimation,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+        padding: const EdgeInsets.only(bottom: 20),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(200),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
             child: Container(
               width: navbarWidth,
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
               decoration: BoxDecoration(
                 color: theme.colorScheme.surface.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(200),
@@ -138,13 +138,12 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
                   ),
                   BlocBuilder<AppCubit, AppState>(
                     builder: (context, state) {
+                      selectedPageIndex = state.selectedPageIndex;
                       return Material(
                         type: MaterialType.transparency,
                         child: Text(
-                          pages[state.selectedPageIndex]['title'].toString(),
-                          style: TextStyle(
-                            fontSize: 16,
-                          ),
+                          pages[selectedPageIndex]['title'].toString(),
+                          style: TextStyle(fontSize: 16),
                         ),
                       );
                     },
@@ -167,8 +166,14 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
                   //   },
                   // ),
                   IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.menu, color: theme.iconTheme.color),
+                    onPressed: () {
+                      showMenuDialog(
+                        context,
+                        widget.onPageSelected,
+                        selectedPageIndex, // أرسلها هنا
+                      );
+                    },
+                    icon: Icon(Icons.menu),
                   ),
                 ],
               ),

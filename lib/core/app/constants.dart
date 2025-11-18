@@ -14,7 +14,7 @@ const oneSignalApiKey =
 const double mobileBreakpoint = 650.0;
 
 /// 800 < Width < 1200: Tablet (Icon-Only Sidebar)
-const double tabletBreakpoint = 1000.0;
+const double tabletBreakpoint = 1200.0;
 
 // === LAYOUT WIDTHS ===
 
