@@ -176,22 +176,22 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
-              // Container(
-              //   padding: EdgeInsets.symmetric(vertical: 10),
-              //   color: primaryColor,
-              //   child: MarqueeLoop(
-              //     speed: Duration(seconds: 18),
-              //     gap: 40,
-              //     items: [
-              //       marqueeItem("Adaptive"),
-              //       marqueeItem("Responsive Design"),
-              //       marqueeItem("Clean Code"),
-              //       marqueeItem("Fast & Fluid"),
-              //       marqueeItem("Scalable Apps"),
-              //       marqueeItem("Pixel Perfect"),
-              //     ],
-              //   ),
-              // ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                color: primaryColor,
+                child: MarqueeLoop(
+                  speed: Duration(seconds: 18),
+                  gap: 40,
+                  items: [
+                    marqueeItem("Adaptive"),
+                    marqueeItem("Responsive Design"),
+                    marqueeItem("Clean Code"),
+                    marqueeItem("Fast & Fluid"),
+                    marqueeItem("Scalable Apps"),
+                    marqueeItem("Pixel Perfect"),
+                  ],
+                ),
+              ),
             ],
           )
         : Column(
@@ -209,22 +209,22 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
-              // Container(
-              //   padding: EdgeInsets.symmetric(vertical: 10),
-              //   color: primaryColor,
-              //   child: MarqueeLoop(
-              //     speed: Duration(seconds: 18),
-              //     gap: 40,
-              //     items: [
-              //       marqueeItem("Adaptive"),
-              //       marqueeItem("Responsive Design"),
-              //       marqueeItem("Clean Code"),
-              //       marqueeItem("Fast & Fluid"),
-              //       marqueeItem("Scalable Apps"),
-              //       marqueeItem("Pixel Perfect"),
-              //     ],
-              //   ),
-              // ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                color: primaryColor,
+                child: MarqueeLoop(
+                  speed: Duration(seconds: 18),
+                  gap: 40,
+                  items: [
+                    marqueeItem("Adaptive"),
+                    marqueeItem("Responsive Design"),
+                    marqueeItem("Clean Code"),
+                    marqueeItem("Fast & Fluid"),
+                    marqueeItem("Scalable Apps"),
+                    marqueeItem("Pixel Perfect"),
+                  ],
+                ),
+              ),
             ],
           );
   }
