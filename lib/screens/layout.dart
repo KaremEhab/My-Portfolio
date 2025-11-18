@@ -1,13 +1,12 @@
+// lib/screens/naviagtion/presentation/layout.dart
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_portfolio/core/app/constants.dart';
 import 'package:my_portfolio/core/app/cubit/app_cubit.dart';
+// Ensure these imports point to your actual file locations
 import 'package:my_portfolio/screens/naviagtion/presentation/navbar.dart';
 import 'package:my_portfolio/screens/naviagtion/presentation/sidebar.dart';
-
-// (Duplicate imports removed for brevity)
 
 class Layout extends StatefulWidget {
   const Layout({super.key});
@@ -18,7 +17,7 @@ class Layout extends StatefulWidget {
 
 class _LayoutState extends State<Layout> {
   final ScrollController _scrollController = ScrollController();
-  final double _pageHeight = 800; // Approx. height of each page
+  final double _pageHeight = 800;
 
   @override
   void initState() {
@@ -28,30 +27,23 @@ class _LayoutState extends State<Layout> {
 
   @override
   void dispose() {
-    _scrollController.removeListener(
-      _onScroll,
-    ); // 🔥 FIX: Good practice to remove listener too
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }
 
   void _onScroll() {
     final cubit = AppCubit.of(context);
-
-    // Calculate current page index based on scroll offset
     final currentIndex = (_scrollController.offset / _pageHeight).round();
 
     if (currentIndex != cubit.state.selectedPageIndex &&
         currentIndex >= 0 &&
         currentIndex < 6) {
-      // This listener is now the *only* source of truth for page changes
       cubit.changePage(currentIndex);
     }
   }
 
   void _scrollToPage(int index) {
-    // We don't need addPostFrameCallback if not in a build method,
-    // but it's harmless and ensures layout is complete.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
@@ -66,8 +58,18 @@ class _LayoutState extends State<Layout> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    const breakpoint = 900;
-    final isMobile = screenWidth < breakpoint;
+
+    // -----------------------------------------------------------
+    // 🛠️ NEW 3-STATE RESPONSIVE LOGIC
+    // -----------------------------------------------------------
+    final bool isMobile = screenWidth < mobileBreakpoint;
+    final bool isTablet =
+        screenWidth >= mobileBreakpoint && screenWidth < tabletBreakpoint;
+
+    // Determine target width for the spacer
+    final double sidebarSpacerWidth = isMobile
+        ? 0
+        : (isTablet ? iconSidebarWidth : sidebarWidth);
 
     final pages = const [
       HomePage(),
@@ -80,6 +82,7 @@ class _LayoutState extends State<Layout> {
 
     return Stack(
       children: [
+        // Background
         Positioned.fill(
           child: Image.asset(
             'assets/images/background-image.png',
@@ -101,19 +104,14 @@ class _LayoutState extends State<Layout> {
             ),
           ),
         ),
+
+        // Main scaffold
         Scaffold(
           backgroundColor: Colors.transparent,
-          // 🔥 FIX: Pass the scroll function to the NavBar
-          bottomNavigationBar: isMobile
-              ? NavBar(onPageSelected: _scrollToPage)
-              : null,
           body: Row(
             children: [
-              // 🔥 FIX: Pass the scroll function to the Sidebar
-              if (!isMobile) Sidebar(onPageSelected: _scrollToPage),
+              Sidebar(onPageSelected: _scrollToPage),
               Expanded(
-                // 🔥 FIX: Removed the BlocBuilder that was wrapping this.
-                // It's not needed and was causing the feedback loop.
                 child: SingleChildScrollView(
                   controller: _scrollController,
                   child: Column(
@@ -132,10 +130,20 @@ class _LayoutState extends State<Layout> {
             ],
           ),
         ),
+
+        // Floating NavBar
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Center(child: NavBar(onPageSelected: _scrollToPage)),
+        ),
       ],
     );
   }
 }
+
+// ... Keep your page widgets as before ...
 
 // ... (All page widgets remain the same) ...
 class HomePage extends StatelessWidget {

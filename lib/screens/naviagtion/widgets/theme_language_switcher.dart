@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iconly/iconly.dart';
 import 'package:my_portfolio/core/app/constants.dart';
 
 class ThemeLanguageSwitcher extends StatelessWidget {
@@ -7,6 +6,7 @@ class ThemeLanguageSwitcher extends StatelessWidget {
   final bool isEnglish;
   final ValueChanged<bool> onThemeChanged;
   final ValueChanged<bool> onLanguageChanged;
+  final bool isShrunk;
 
   const ThemeLanguageSwitcher({
     super.key,
@@ -14,17 +14,30 @@ class ThemeLanguageSwitcher extends StatelessWidget {
     required this.isEnglish,
     required this.onThemeChanged,
     required this.onLanguageChanged,
+    this.isShrunk = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final isCompact = width < 600; // 👈 Responsive breakpoint
+    // If shrunk, show icon-only buttons
+    if (isShrunk) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            icon: Icon(isDarkMode ? Icons.dark_mode : Icons.light_mode),
+            onPressed: () => onThemeChanged(!isDarkMode),
+          ),
+          IconButton(
+            icon: Icon(Icons.language),
+            onPressed: () => onLanguageChanged(!isEnglish),
+          ),
+        ],
+      );
+    }
 
+    // Original (Full) Widget
     return Column(
-      mainAxisAlignment: isCompact
-          ? MainAxisAlignment.center
-          : MainAxisAlignment.spaceBetween,
       children: [
         _buildSwitcher(
           context,
@@ -33,7 +46,6 @@ class ThemeLanguageSwitcher extends StatelessWidget {
           value: isDarkMode,
           onChanged: onThemeChanged,
         ),
-        SizedBox(width: isCompact ? 10 : 25),
         _buildSwitcher(
           context,
           icon: Icons.language,
@@ -45,7 +57,6 @@ class ThemeLanguageSwitcher extends StatelessWidget {
     );
   }
 
-  /// 🔹 Builds each switcher row with icon, label, and switch
   Widget _buildSwitcher(
     BuildContext context, {
     required IconData icon,
@@ -69,7 +80,6 @@ class ThemeLanguageSwitcher extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(width: 8),
         Transform.scale(
           scale: 0.9,
           child: Switch(

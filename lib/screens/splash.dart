@@ -16,9 +16,8 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     super.initState();
-
-    // ⏱ Wait 5 seconds before navigating
-    Timer(const Duration(seconds: 5), () {
+    Timer(const Duration(seconds: 3), () {
+      // Reduced wait for better UX
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -30,68 +29,55 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: Image.asset(
-            'assets/images/background-image.png',
-            fit: BoxFit.cover,
-            height: double.infinity,
-            width: double.infinity,
-            alignment: Alignment.center,
-          ),
-        ),
-        Positioned.fill(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
-            child: Container(color: blackColor.withAlpha((0.1 * 255).round())),
-          ),
-        ),
-        Positioned.fill(
-          child: Opacity(
-            opacity: 0.2,
+    return Scaffold(
+      // Wrapped in Scaffold for safety
+      body: Stack(
+        children: [
+          Positioned.fill(
             child: Image.asset(
-              'assets/images/background-shapes.png',
+              'assets/images/background-image.png',
               fit: BoxFit.cover,
-              height: double.infinity,
-              width: double.infinity,
-              alignment: Alignment.center,
             ),
           ),
-        ),
-        Center(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
+              child: Container(
+                color: blackColor.withAlpha((0.1 * 255).round()),
+              ),
+            ),
+          ),
+          Center(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Container(
-                height: MediaQuery.sizeOf(context).height * 0.4,
-                width: MediaQuery.sizeOf(context).width * 0.3,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: screenBg.withAlpha(30),
-                ),
-                child: Center(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                child: Container(
+                  height: 200,
+                  width: 200,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: screenBg.withOpacity(0.2),
+                  ),
                   child: Column(
-                    spacing: 20,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SvgPicture.asset(
                         'assets/images/my-logo.svg',
-                        fit: BoxFit.cover,
-                        color: screenBg,
-                        height: 125,
-                        width: 125,
+                        color: Colors.white,
+                        height: 80,
+                        width: 80,
                       ),
-                      CircularProgressIndicator(color: screenBg),
+                      const SizedBox(height: 20),
+                      const CircularProgressIndicator(color: Colors.white),
                     ],
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

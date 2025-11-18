@@ -8,7 +8,21 @@ const oneSignalApiKey =
 
 // ------------------- APP VARIABLES -------------------
 
-double sidebarWidth = 250;
+// === RESPONSIVE BREAKPOINTS ===
+
+/// Width < 800: Mobile (NavBar)
+const double mobileBreakpoint = 650.0;
+
+/// 800 < Width < 1200: Tablet (Icon-Only Sidebar)
+const double tabletBreakpoint = 1000.0;
+
+// === LAYOUT WIDTHS ===
+
+/// Full sidebar width (Desktop)
+const double sidebarWidth = 250.0;
+
+/// Shrunk sidebar width (Tablet)
+const double iconSidebarWidth = 70.0;
 
 // ------------------- APP COLORS -------------------
 

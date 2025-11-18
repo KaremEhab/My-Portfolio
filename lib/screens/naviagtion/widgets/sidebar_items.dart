@@ -4,11 +4,13 @@ import 'package:iconly/iconly.dart';
 class SidebarItems extends StatefulWidget {
   final int selectedIndex;
   final ValueChanged<int> onItemSelected;
+  final bool isShrunk;
 
   const SidebarItems({
     super.key,
     required this.selectedIndex,
     required this.onItemSelected,
+    this.isShrunk = false,
   });
 
   @override
@@ -16,7 +18,6 @@ class SidebarItems extends StatefulWidget {
 }
 
 class _SidebarItemsState extends State<SidebarItems> {
-  // Sidebar items using Iconly Light for default
   final List<_SidebarItem> _items = const [
     _SidebarItem(
       lightIcon: IconlyLight.home,
@@ -24,13 +25,13 @@ class _SidebarItemsState extends State<SidebarItems> {
       label: 'Home',
     ),
     _SidebarItem(
-      lightIcon: IconlyLight.folder,
-      boldIcon: IconlyBold.folder,
+      lightIcon: IconlyLight.work,
+      boldIcon: IconlyBold.work,
       label: 'Projects',
     ),
     _SidebarItem(
-      lightIcon: IconlyLight.work,
-      boldIcon: IconlyBold.work,
+      lightIcon: Icons.code_outlined,
+      boldIcon: Icons.code,
       label: 'Skills',
     ),
     _SidebarItem(
@@ -53,14 +54,11 @@ class _SidebarItemsState extends State<SidebarItems> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final width = MediaQuery.of(context).size.width;
-
-    // Responsive sidebar width
-    final sidebarWidth = width < 600 ? 70.0 : 250.0;
 
     return ListView.builder(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: _items.length,
       itemBuilder: (context, index) {
         final item = _items[index];
@@ -72,7 +70,7 @@ class _SidebarItemsState extends State<SidebarItems> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             margin: const EdgeInsets.symmetric(vertical: 4),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               color: isSelected
                   ? theme.colorScheme.primary
@@ -80,7 +78,7 @@ class _SidebarItemsState extends State<SidebarItems> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
-              mainAxisAlignment: sidebarWidth < 100
+              mainAxisAlignment: widget.isShrunk
                   ? MainAxisAlignment.center
                   : MainAxisAlignment.start,
               children: [
@@ -91,7 +89,7 @@ class _SidebarItemsState extends State<SidebarItems> {
                       : Colors.white.withAlpha((0.6 * 255).round()),
                   size: 22,
                 ),
-                if (sidebarWidth >= 100) ...[
+                if (!widget.isShrunk) ...[
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -122,7 +120,6 @@ class _SidebarItem {
   final IconData lightIcon;
   final IconData boldIcon;
   final String label;
-
   const _SidebarItem({
     required this.lightIcon,
     required this.boldIcon,
